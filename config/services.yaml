@@ -24,5 +24,20 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # The JWT authenticator is registered explicitly on the `api` firewall, so
+    # its collaborators are wired by hand instead of relying on the ambiguous
+    # UserProviderInterface/TokenExtractorInterface aliases shipped by the
+    # security and lexik bundles.
+    App\Security\RealWorldTokenExtractor:
+        arguments:
+            $headerName: 'Authorization'
+            $prefixes: ['Token', 'Bearer']
+            $tokenHeaderName: 'Token'
+
+    App\Security\RealWorldJwtAuthenticator:
+        arguments:
+            $tokenExtractor: '@App\Security\RealWorldTokenExtractor'
+            $userProvider: '@security.user.provider.concrete.app_user_provider'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

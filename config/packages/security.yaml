@@ -1,14 +1,47 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: bcrypt
+            cost: 12
+            # bcrypt only considers the first 72 bytes of a password. Longer
+            # passwords are rejected by the API with a 422 before they reach
+            # the hasher.
+
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+
     firewalls:
         dev:
+            # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+        api:
+            # Every route below /api is served by the stateless JWT firewall.
+            pattern: ^/api
+            stateless: true
+            provider: app_user_provider
+            entry_point: App\Security\RealWorldJwtAuthenticator
+            custom_authenticators:
+                - App\Security\RealWorldJwtAuthenticator
         main:
-            lazy: true
-            provider: users_in_memory
+            security: false
+
+    # Note: Only the *first* matching rule is applied
+    access_control:
+        # Public endpoints.
+        - { path: ^/api/users$, methods: [POST], roles: PUBLIC_ACCESS }
+        - { path: ^/api/users/login$, methods: [POST], roles: PUBLIC_ACCESS }
+        # Authenticated endpoints.
+        - { path: ^/api/user$, roles: ROLE_USER }
+        - { path: ^/api/profiles/[^/]+/follow$, roles: ROLE_USER }
+        - { path: ^/api/articles/feed$, roles: ROLE_USER }
+        - { path: ^/api/articles$, methods: [POST], roles: ROLE_USER }
+        - { path: ^/api/articles/[^/]+$, methods: [PUT, DELETE], roles: ROLE_USER }
+        - { path: ^/api/articles/[^/]+/comments$, methods: [POST], roles: ROLE_USER }
+        - { path: ^/api/articles/[^/]+/comments/[^/]+$, methods: [DELETE], roles: ROLE_USER }
+        - { path: ^/api/articles/[^/]+/favorite$, methods: [POST, DELETE], roles: ROLE_USER }
