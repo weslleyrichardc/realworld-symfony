@@ -45,3 +45,12 @@ security:
         - { path: ^/api/articles/[^/]+/comments$, methods: [POST], roles: ROLE_USER }
         - { path: ^/api/articles/[^/]+/comments/[^/]+$, methods: [DELETE], roles: ROLE_USER }
         - { path: ^/api/articles/[^/]+/favorite$, methods: [POST, DELETE], roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            # Password hashers are resource-intensive by design to ensure security.
+            # In tests, it's safe to reduce their cost to improve performance.
+            App\Entity\User:
+                algorithm: bcrypt
+                cost: 4 # Lowest possible value for bcrypt
