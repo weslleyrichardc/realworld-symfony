@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
@@ -40,7 +41,7 @@ final class PostController extends AbstractController
     #[Route('/article/{slug}', name: 'web_article_show', requirements: ['slug' => '[a-z0-9\-]+'])]
     public function show(string $slug): Response
     {
-        $article = $this->articles->findOneBySlugOrFail($slug);
+        $article = $this->article($slug);
 
         $favoritedIds = $this->viewer->favoritedIds([$article]);
         $viewer = $this->viewer->user();
@@ -61,10 +62,10 @@ final class PostController extends AbstractController
     #[Route('/article/{slug}/favorite', name: 'web_article_favorite', methods: ['POST'])]
     public function favorite(string $slug, Request $request): RedirectResponse
     {
-        $this->validateCsrf($request, 'favorite.'.$slug);
+        $this->validateCsrf($request, 'favorite'.$slug);
         $this->denyUnlessAuthenticated();
 
-        $article = $this->articles->findOneBySlugOrFail($slug);
+        $article = $this->article($slug);
 
         if ('unfavorite' === $request->request->getString('op')) {
             $this->articleService->unfavorite($article, $this->viewer->user());
@@ -81,10 +82,10 @@ final class PostController extends AbstractController
     #[Route('/article/{slug}/comments', name: 'web_comment_create', methods: ['POST'])]
     public function comment(string $slug, Request $request): RedirectResponse
     {
-        $this->validateCsrf($request, 'comments.'.$slug);
+        $this->validateCsrf($request, 'comments'.$slug);
         $this->denyUnlessAuthenticated();
 
-        $article = $this->articles->findOneBySlugOrFail($slug);
+        $article = $this->article($slug);
 
         $body = trim($request->request->getString('body'));
 
@@ -108,10 +109,10 @@ final class PostController extends AbstractController
     #[Route('/article/{slug}/comments/{id<\d+>}/delete', name: 'web_comment_delete', methods: ['POST'])]
     public function deleteComment(string $slug, int $id, Request $request): RedirectResponse
     {
-        $this->validateCsrf($request, 'comment.'.$id);
+        $this->validateCsrf($request, 'comment'.$id);
         $this->denyUnlessAuthenticated();
 
-        $article = $this->articles->findOneBySlugOrFail($slug);
+        $article = $this->article($slug);
         $comment = $this->comments->find($id);
 
         if (null === $comment || $comment->getArticle() !== $article) {
@@ -143,5 +144,19 @@ final class PostController extends AbstractController
         if (!$this->csrfTokens->isTokenValid(new CsrfToken($tokenId, $request->request->getString('_token')))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
+    }
+
+    /**
+     * Finds the article by slug, rendering web-friendly 404s.
+     */
+    private function article(string $slug): Article
+    {
+        $article = $this->articles->findOneBySlug($slug);
+
+        if (null === $article) {
+            throw new NotFoundHttpException('Article not found.');
+        }
+
+        return $article;
     }
 }

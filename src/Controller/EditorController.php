@@ -11,6 +11,7 @@ use App\Service\Viewer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
@@ -77,7 +78,7 @@ final class EditorController extends AbstractController
     #[Route('/editor/{slug}', name: 'web_editor_edit', methods: ['GET'], requirements: ['slug' => '[a-z0-9\-]+'])]
     public function edit(string $slug): Response
     {
-        $article = $this->articles->findOneBySlugOrFail($slug);
+        $article = $this->article($slug);
 
         $this->denyUnlessAuthor($article);
 
@@ -97,7 +98,7 @@ final class EditorController extends AbstractController
     {
         $this->validateCsrf($request, 'editor');
 
-        $article = $this->articles->findOneBySlugOrFail($slug);
+        $article = $this->article($slug);
 
         $this->denyUnlessAuthor($article);
 
@@ -132,7 +133,7 @@ final class EditorController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        $article = $this->articles->findOneBySlugOrFail($slug);
+        $article = $this->article($slug);
 
         $this->denyUnlessAuthor($article);
 
@@ -174,5 +175,19 @@ final class EditorController extends AbstractController
         if (!$this->csrfTokens->isTokenValid(new CsrfToken($tokenId, $request->request->getString('_token')))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
+    }
+
+    /**
+     * Finds the article by slug, rendering web-friendly 404s.
+     */
+    private function article(string $slug): Article
+    {
+        $article = $this->articles->findOneBySlug($slug);
+
+        if (null === $article) {
+            throw new NotFoundHttpException('Article not found.');
+        }
+
+        return $article;
     }
 }
