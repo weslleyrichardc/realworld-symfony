@@ -187,5 +187,8 @@
             "version": "7.0",
             "ref": "0df5844274d871b37fc3816c57a768ffc60a43a5"
         }
+    },
+    "twig/extra-bundle": {
+        "version": "v3.29.0"
     }
 }

@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home — Conduit{% endblock %}
+
+{% block body %}
+  <div class="home-page">
+
+    <div class="banner">
+      <div class="container">
+        <h1 class="logo-font">conduit</h1>
+        <p>A place to share your knowledge.</p>
+      </div>
+    </div>
+
+    <div class="container page">
+      <div class="row">
+
+        <div class="col-md-9">
+          <div class="feed-toggle">
+            <ul class="nav nav-pills outline-active">
+              <li class="nav-item">
+                {% if app.user %}
+                  <a class="nav-link{% if personalFeed %} active{% endif %}" href="{{ path('web_home', {feed: 'yours'}) }}">Your Feed</a>
+                {% else %}
+                  <a class="nav-link disabled" href="#">Your Feed</a>
+                {% endif %}
+              </li>
+              <li class="nav-item">
+                <a class="nav-link{% if not personalFeed and activeTag is null %} active{% endif %}" href="{{ path('web_home') }}">Global Feed</a>
+              </li>
+              {% if activeTag is not null %}
+                <li class="nav-item">
+                  <a class="nav-link active" href="{{ path('web_home', {tag: activeTag}) }}">#{{ activeTag }}</a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+
+          {% for row in postRows %}
+            {{ include('post/_preview.html.twig', row) }}
+          {% else %}
+            <div class="post-preview">No articles are here... yet.</div>
+          {% endfor %}
+
+          {{ include('_pagination.html.twig', {route: 'web_home', params: (personalFeed ? {feed: 'yours'} : {tag: activeTag}), page: page, pages: pages}) }}
+        </div>
+
+        <div class="col-md-3">
+          <div class="sidebar">
+            <p>Popular Tags</p>
+
+            <div class="tag-list">
+              {% for name in tagNames %}
+                <a href="{{ path('web_home', {tag: name}) }}" class="label label-pill{% if name == activeTag %} label-primary{% else %} label-default{% endif %}">{{ name }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
