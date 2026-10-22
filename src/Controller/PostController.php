@@ -50,6 +50,7 @@ final class PostController extends AbstractController
             'favorited' => isset($favoritedIds[$article->getId()->toRfc4122()]),
             'comments' => $this->comments->findByArticle($article),
             'is_author' => null !== $viewer && $viewer->getId() === $article->getAuthor()->getId(),
+            'following' => $this->viewer->followedUsernames()[$article->getAuthor()->getUsername()] ?? false,
         ]);
     }
 

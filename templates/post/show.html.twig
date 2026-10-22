@@ -28,6 +28,8 @@
               </button>
             </form>
           {% else %}
+            {% include 'profile/_follow_button.html.twig' with {profile: article.author} %}
+            &nbsp;&nbsp;
             {% if app.user %}
               <form method="post" action="{{ path('web_article_favorite', {slug: article.slug}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ article.slug) }}">
@@ -63,8 +65,10 @@
             <a href="{{ path('web_profile_view', {username: article.author.username}) }}" class="author">{{ article.author.username }}</a>
             <span class="date">{{ article.createdAt|format_date(locale='en', pattern='MMMM d') }}</span>
           </div>
-          {# The action bar is kept in sync with the banner: favorite toggles. #}
+          {# The action bar is kept in sync with the banner: follow and favorite toggles. #}
           {% if not is_author %}
+            {% include 'profile/_follow_button.html.twig' with {profile: article.author} %}
+            &nbsp;
             {% if app.user %}
               <form method="post" action="{{ path('web_article_favorite', {slug: article.slug}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ article.slug) }}">

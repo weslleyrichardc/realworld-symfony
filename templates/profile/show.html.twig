@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ profile.username }} — Conduit{% endblock %}
+
+{% block body %}
+  <div class="profile-page">
+
+    <div class="user-info">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-md-10 offset-md-1">
+            <img src="{{ profile.image|default('https://static.productionready.io/images/smiley-cyrus.jpg') }}" class="user-img" alt="{{ profile.username }}">
+            <h4>{{ profile.username }}</h4>
+            <p style="white-space: pre-line;">{{ profile.bio }}</p>
+            {% if is_self %}
+              {# The edit settings button is rendered once the settings page exists. #}
+            {% else %}
+              {% include 'profile/_follow_button.html.twig' %}
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-10 offset-md-1">
+          <div class="posts-toggle">
+            <ul class="nav nav-pills outline-active">
+              <li class="nav-item">
+                <a class="nav-link{% if not favoritedTab %} active{% endif %}" href="{{ path('web_profile_view', {username: profile.username}) }}">My Posts</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link{% if favoritedTab %} active{% endif %}" href="{{ path('web_profile_view', {username: profile.username, favorite: 'true'}) }}">Favorited Posts</a>
+              </li>
+            </ul>
+          </div>
+
+          {% for row in postRows %}
+            {{ include('post/_preview.html.twig', row) }}
+          {% else %}
+            <div class="post-preview">No articles are here... yet.</div>
+          {% endfor %}
+
+          {{ include('_pagination.html.twig', {route: 'web_profile_view', params: {username: profile.username, favorite: (favoritedTab ? 'true' : null)}, page: page, pages: pages}) }}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

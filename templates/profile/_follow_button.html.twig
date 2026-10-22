@@ -1,0 +1,11 @@
+{% if app.user and app.user.username != profile.username %}
+  {% set is_following = following|default(false) %}
+  <form method="post" action="{{ path('web_profile_follow', {username: profile.username}) }}" class="d-inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('follow' ~ profile.username) }}">
+    <input type="hidden" name="op" value="{{ is_following ? 'unfollow' : 'follow' }}">
+    <button class="btn btn-sm btn-outline-secondary" type="submit">
+      <i class="ion-plus-round"></i>&nbsp;
+      {{ (is_following ? 'Unfollow' : 'Follow') }} {{ profile.username }}
+    </button>
+  </form>
+{% endif %}
