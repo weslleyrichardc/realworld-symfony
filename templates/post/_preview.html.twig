@@ -1,6 +1,6 @@
 <div class="article-preview">
   <div class="article-meta">
-    <a href="{{ path('web_profile_view', {username: article.author.username}) }}"><img src="{{ article.author.image|default('https://static.productionready.io/images/smiley-cyrus.jpg') }}" alt="{{ article.author.username }}"></a>
+    <a href="{{ path('web_profile_view', {username: article.author.username}) }}"><img src="{{ article.author.image|default(asset('assets/smiley.svg')) }}" onerror="this.onerror=null;this.src='{{ asset('assets/smiley.svg') }}'" alt="{{ article.author.username }}"></a>
     <div class="info">
       <a href="{{ path('web_profile_view', {username: article.author.username}) }}" class="author">{{ article.author.username }}</a>
       <span class="date">{{ article.createdAt|format_date(locale='en', pattern='MMMM d') }}</span>

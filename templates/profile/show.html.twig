@@ -10,7 +10,7 @@
         <div class="row">
 
           <div class="col-md-10 offset-md-1">
-            <img src="{{ profile.image|default('https://static.productionready.io/images/smiley-cyrus.jpg') }}" class="user-img" alt="{{ profile.username }}">
+            <img src="{{ profile.image|default(asset('assets/smiley.svg')) }}" onerror="this.onerror=null;this.src='{{ asset('assets/smiley.svg') }}'" class="user-img" alt="{{ profile.username }}">
             <h4>{{ profile.username }}</h4>
             <p style="white-space: pre-line;">{{ profile.bio }}</p>
             {% if is_self %}
