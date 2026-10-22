@@ -1,23 +1,72 @@
+{% set flash_types = {error: 'error-messages', notice: 'success-messages', success: 'success-messages'} %}
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Conduit{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('assets/conduit.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic">
+  </head>
+  <body>
+    <nav class="navbar navbar-light">
+      <div class="container">
+        <a class="navbar-brand" href="{{ path('web_home') }}">conduit</a>
+        <ul class="nav navbar-nav pull-xs-right">
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ path('web_home') }}">Home</a>
+          </li>
+          {% if app.user %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('web_editor_create') }}">
+                <i class="ion-compose"></i>&nbsp;New Post
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('web_settings') }}">
+                <i class="ion-gear-a"></i>&nbsp;Settings
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('web_profile_view', {username: app.user.username}) }}">
+                <img src="{{ app.user.image|default('https://static.productionready.io/images/smiley-cyrus.jpg') }}" class="user-pic" alt="{{ app.user.username }}">
+                {{ app.user.username }}
+              </a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('web_login') }}">Sign in</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('web_register') }}">Sign up</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
 
-        {% block javascripts %}
-        {% endblock %}
+    {% for type, messages in app.flashes %}
+      {% if flash_types[type] is defined %}
+        <div class="{{ flash_types[type] }}">
+          <ul>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endfor %}
 
-        {% set frankenphp_hot_reload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphp_hot_reload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphp_hot_reload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    {% block body %}{% endblock %}
+
+    <footer>
+      <div class="container">
+        <a href="{{ path('web_home') }}" class="logo-font">conduit</a>
+        <span class="attribution">
+          An interactive learning project from <a href="https://thinkster.io">Thinkster</a>. Code &amp; design licensed under MIT.
+        </span>
+      </div>
+    </footer>
+  </body>
 </html>
