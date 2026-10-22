@@ -10,12 +10,12 @@
         <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ article.slug) }}">
         <input type="hidden" name="op" value="{{ favorited ? 'unfavorite' : 'favorite' }}">
         <button class="btn btn-outline-primary btn-sm" type="submit">
-          <i class="ion-heart"></i>&nbsp;{{ article.favorites.count }}
+          <i class="ion-heart"></i>&nbsp;{{ article.favoritesCount }}
         </button>
       </form>
     {% else %}
       <a class="btn btn-outline-primary btn-sm pull-xs-right" href="{{ path('web_login') }}">
-        <i class="ion-heart"></i>&nbsp;{{ article.favorites.count }}
+        <i class="ion-heart"></i>&nbsp;{{ article.favoritesCount }}
       </a>
     {% endif %}
   </div>
