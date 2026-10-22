@@ -4,12 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\Autolink\AutolinkExtension;
-use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
-use League\CommonMark\Extension\Table\TableExtension;
-use League\CommonMark\Extension\TaskList\TaskListExtension;
-use League\CommonMark\MarkdownConverter;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -18,17 +13,15 @@ use Twig\TwigFilter;
  */
 final class MarkdownExtension extends AbstractExtension
 {
-    private readonly MarkdownConverter $converter;
+    private readonly GithubFlavoredMarkdownConverter $converter;
 
     public function __construct()
     {
-        $environment = new Environment([], ['html_input' => 'strip', 'max_nesting_level' => 20]);
-        $environment->addExtension(new AutolinkExtension());
-        $environment->addExtension(new StrikethroughExtension());
-        $environment->addExtension(new TableExtension());
-        $environment->addExtension(new TaskListExtension());
-
-        $this->converter = new MarkdownConverter($environment);
+        $this->converter = new GithubFlavoredMarkdownConverter([
+            'html_input' => 'strip',
+            'allow_unsafe_links' => false,
+            'max_nesting_level' => 20,
+        ]);
     }
 
     public function getFilters(): array
@@ -40,6 +33,6 @@ final class MarkdownExtension extends AbstractExtension
 
     public function convert(string $source): string
     {
-        return $this->converter->convert($source);
+        return (string) $this->converter->convert($source);
     }
 }
