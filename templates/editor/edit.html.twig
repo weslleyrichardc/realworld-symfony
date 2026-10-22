@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if article is defined %}Edit{% else %}New{% endif %} Article — Conduit{% endblock %}
+
+{% block body %}
+  <div class="editor-page">
+    <div class="container page">
+      <div class="row">
+
+        <div class="col-md-10 offset-md-1 col-xs-12">
+          {% set action = article is defined ? path('web_article_update', {slug: article.slug}) : path('web_article_create') %}
+          <form method="post" action="{{ action }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('editor') }}">
+
+            <fieldset>
+              <fieldset class="form-group">
+                <input class="form-control form-control-lg" type="text" name="title" placeholder="Article Title"
+                       value="{{ article.title|default('') }}" required>
+              </fieldset>
+              <fieldset class="form-group">
+                <input class="form-control form-control-lg" type="text" name="description"
+                       placeholder="What's this article about?"
+                       value="{{ article.description|default('') }}" required>
+              </fieldset>
+              <fieldset class="form-group">
+                <textarea class="form-control form-control-lg" name="body" rows="8" required
+                          placeholder="Write your article (in markdown)">{{ article.body|default('') }}</textarea>
+              </fieldset>
+              <fieldset class="form-group">
+                <input class="form-control form-control-lg" type="text" name="tagList"
+                       placeholder="Enter tags (separate them with commas)"
+                       value="{{ article_tags|default('') }}">
+              </fieldset>
+              <button class="btn btn-lg pull-xs-right btn-primary" type="submit">
+                Publish Article
+              </button>
+            </fieldset>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

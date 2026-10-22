@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }} — Conduit{% endblock %}
+
+{% block body %}
+  <div class="article-page">
+
+    <div class="banner">
+      <div class="container">
+
+        <h1>{{ article.title }}</h1>
+
+        <div class="article-meta">
+          <a href="{{ path('web_profile_view', {username: article.author.username}) }}"><img src="{{ article.author.image|default(asset('assets/smiley.svg')) }}" onerror="this.onerror=null;this.src='{{ asset('assets/smiley.svg') }}'" alt="{{ article.author.username }}"></a>
+          <div class="info">
+            <a href="{{ path('web_profile_view', {username: article.author.username}) }}" class="author">{{ article.author.username }}</a>
+            <span class="date">{{ article.createdAt|format_date(locale='en', pattern='MMMM d') }}</span>
+          </div>
+          {{ include('post/_actions.html.twig') }}
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container page">
+      <div class="row article-content">
+        <div class="col-md-12">
+          {{ article.body|markdown }}
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="article-actions">
+        <div class="article-meta">
+          <a href="{{ path('web_profile_view', {username: article.author.username}) }}"><img src="{{ article.author.image|default(asset('assets/smiley.svg')) }}" onerror="this.onerror=null;this.src='{{ asset('assets/smiley.svg') }}'" alt="{{ article.author.username }}"></a>
+          <div class="info">
+            <a href="{{ path('web_profile_view', {username: article.author.username}) }}" class="author">{{ article.author.username }}</a>
+            <span class="date">{{ article.createdAt|format_date(locale='en', pattern='MMMM d') }}</span>
+          </div>
+          {# The action bar is kept in sync with the banner: edit, delete, follow and favorite toggles. #}
+          {{ include('post/_actions.html.twig') }}
+        </div>
+      </div>
+
+      <div class="row" id="comments">
+
+        <div class="col-md-8 col-md-offset-2">
+
+          {% for comment in comments %}
+            <div class="card">
+              <div class="card-block">
+                <p class="card-text" style="white-space: pre-line;">{{ comment.body }}</p>
+              </div>
+              <div class="card-footer">
+                <a href="{{ path('web_profile_view', {username: comment.author.username}) }}" class="comment-author">
+                  <img src="{{ comment.author.image|default(asset('assets/smiley.svg')) }}" onerror="this.onerror=null;this.src='{{ asset('assets/smiley.svg') }}'" class="comment-author-img" alt="{{ comment.author.username }}">
+                </a>
+                &nbsp;
+                <a href="{{ path('web_profile_view', {username: comment.author.username}) }}" class="comment-author">{{ comment.author.username }}</a>
+                <span class="date-posted">{{ comment.createdAt|format_date(locale='en', pattern='MMM d') }}</span>
+                {% if app.user and app.user.username == comment.author.username %}
+                  <span class="mod-options">
+                    <form method="post" action="{{ path('web_comment_delete', {slug: article.slug, id: comment.id}) }}" class="d-inline">
+                      <input type="hidden" name="_token" value="{{ csrf_token('comment' ~ comment.id) }}">
+                      <button type="submit" class="btn-as-link" title="Delete comment">
+                        <i class="ion-trash-a"></i>
+                      </button>
+                    </form>
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          {% else %}
+            <div class="card">
+              <div class="card-block">
+                <p class="card-text">No comments yet. Be the first to reply.</p>
+              </div>
+            </div>
+          {% endfor %}
+
+          {% if app.user %}
+            <form class="card comment-form" method="post" action="{{ path('web_comment_create', {slug: article.slug}) }}">
+              <div class="card-block">
+                <textarea class="form-control" name="body" placeholder="Write a comment..." rows="3"></textarea>
+              </div>
+              <div class="card-footer">
+                <img src="{{ app.user.image|default(asset('assets/smiley.svg')) }}" onerror="this.onerror=null;this.src='{{ asset('assets/smiley.svg') }}'" class="comment-author-img" alt="{{ app.user.username }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('comments' ~ article.slug) }}">
+                <button class="btn btn-sm btn-primary" type="submit">Post Comment</button>
+              </div>
+            </form>
+          {% else %}
+            <a href="{{ path('web_login') }}">Sign in to write a comment.</a>
+          {% endif %}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+{% endblock %}

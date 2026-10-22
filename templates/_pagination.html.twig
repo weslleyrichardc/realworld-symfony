@@ -1,0 +1,27 @@
+{% if pages > 1 %}
+  <ul class="pagination">
+    <li class="page-item{% if page < 2 %} disabled{% endif %}">
+      {% if page > 1 %}
+        <a class="page-link" href="{{ path(route, params|default({})|merge({page: page - 1})) }}">&lt;</a>
+      {% else %}
+        <span class="page-link">&lt;</span>
+      {% endif %}
+    </li>
+    {% for n in 1..pages %}
+      <li class="page-item{% if n == page %} active{% endif %}">
+        {% if n != page %}
+          <a class="page-link" href="{{ path(route, params|default({})|merge({page: n})) }}">{{ n }}</a>
+        {% else %}
+          <span class="page-link">{{ n }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+    <li class="page-item{% if page > pages - 1 %} disabled{% endif %}">
+      {% if page < pages %}
+        <a class="page-link" href="{{ path(route, params|default({})|merge({page: page + 1})) }}">&gt;</a>
+      {% else %}
+        <span class="page-link">&gt;</span>
+      {% endif %}
+    </li>
+  </ul>
+{% endif %}

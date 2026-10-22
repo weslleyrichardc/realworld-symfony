@@ -2,6 +2,13 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # Bump when properties or stylesheets change so browsers drop their
+    # cached copies (asset() appends this as ?v=1). The %s placeholders are
+    # the asset path first, then the version.
+    assets:
+        version: '1'
+        version_format: '%%s?v=%%s'
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
@@ -13,3 +20,7 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+
+when@prod:
+    framework:
+        error_controller: 'App\Controller\WebErrorController::show'

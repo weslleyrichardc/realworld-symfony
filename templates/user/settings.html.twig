@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Settings — Conduit{% endblock %}
+
+{% block body %}
+  <div class="settings-page">
+    <div class="container page">
+      <div class="row">
+
+        <div class="col-md-6 offset-md-3 col-xs-12">
+          <h1 class="text-xs-center">Your Settings</h1>
+
+          <form method="post" action="{{ path('web_settings_save') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('settings') }}">
+            <fieldset>
+              <fieldset class="form-group">
+                <input class="form-control" type="text" name="image" placeholder="URL of profile picture"
+                       value="{{ user.image ?? '' }}">
+              </fieldset>
+              <fieldset class="form-group">
+                <input class="form-control form-control-lg" type="text" name="username" placeholder="Username"
+                       value="{{ user.username }}" required>
+              </fieldset>
+              <fieldset class="form-group">
+                <textarea class="form-control form-control-lg" name="bio" rows="8"
+                          placeholder="Short bio about you">{{ user.bio ?? '' }}</textarea>
+              </fieldset>
+              <fieldset class="form-group">
+                <input class="form-control form-control-lg" type="email" name="email" placeholder="Email"
+                       value="{{ user.email }}" required>
+              </fieldset>
+              <fieldset class="form-group">
+                <input class="form-control form-control-lg" type="password" name="password" placeholder="New Password"
+                       minlength="8">
+              </fieldset>
+              <button class="btn btn-lg btn-primary pull-xs-right" type="submit">
+                Update Settings
+              </button>
+            </fieldset>
+          </form>
+
+          <form method="post" action="{{ path('web_logout') }}" class="text-xs-center">
+            <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+            <button class="btn btn-lg btn-outline-secondary" type="submit">
+              Or click here to logout.
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{# The follow / favorite / edit button group of an article. It appears once in
+   the banner and once below the article body, and must stay in sync there. #}
+{% if is_author %}
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('web_editor_edit', {slug: article.slug}) }}">
+    <i class="ion-edit"></i>&nbsp;Edit Article
+  </a>
+  <form method="post" action="{{ path('web_article_delete', {slug: article.slug}) }}" class="d-inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.slug) }}">
+    <button class="btn btn-sm btn-outline-danger" type="submit">
+      <i class="ion-trash-a"></i>&nbsp;Delete Article
+    </button>
+  </form>
+{% else %}
+  {% include 'profile/_follow_button.html.twig' with {profile: article.author} %}
+  &nbsp;
+  {% if app.user %}
+    <form method="post" action="{{ path('web_article_favorite', {slug: article.slug}) }}" class="d-inline">
+      <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ article.slug) }}">
+      <input type="hidden" name="op" value="{{ favorited ? 'unfavorite' : 'favorite' }}">
+      <button class="btn btn-sm {% if favorited %}btn-primary{% else %}btn-outline-primary{% endif %}" type="submit">
+        <i class="ion-heart"></i>&nbsp;Favorite Post <span class="counter">({{ article.favoritesCount }})</span>
+      </button>
+    </form>
+  {% else %}
+    <a class="btn btn-sm btn-outline-primary" href="{{ path('web_login') }}">
+      <i class="ion-heart"></i>&nbsp;Favorite Post <span class="counter">({{ article.favoritesCount }})</span>
+    </a>
+  {% endif %}
+{% endif %}

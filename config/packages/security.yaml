@@ -29,7 +29,14 @@ security:
             custom_authenticators:
                 - App\Security\RealWorldJwtAuthenticator
         main:
-            security: false
+            # Everything outside `/api` is served by the stateful session
+            # firewall backing the web user interface.
+            pattern: ^/
+            stateless: false
+            provider: app_user_provider
+            entry_point: App\Security\WebAuthenticator
+            custom_authenticators:
+                - App\Security\WebAuthenticator
 
     # Note: Only the *first* matching rule is applied
     access_control:
@@ -45,6 +52,10 @@ security:
         - { path: ^/api/articles/[^/]+/comments$, methods: [POST], roles: ROLE_USER }
         - { path: ^/api/articles/[^/]+/comments/[^/]+$, methods: [DELETE], roles: ROLE_USER }
         - { path: ^/api/articles/[^/]+/favorite$, methods: [POST, DELETE], roles: ROLE_USER }
+
+        # Web user interface.
+        - { path: ^/editor, roles: ROLE_USER }
+        - { path: ^/settings, roles: ROLE_USER }
 
 when@test:
     security:

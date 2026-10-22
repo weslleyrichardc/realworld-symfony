@@ -1,0 +1,32 @@
+<div class="article-preview">
+  <div class="article-meta">
+    <a href="{{ path('web_profile_view', {username: article.author.username}) }}"><img src="{{ article.author.image|default(asset('assets/smiley.svg')) }}" onerror="this.onerror=null;this.src='{{ asset('assets/smiley.svg') }}'" alt="{{ article.author.username }}"></a>
+    <div class="info">
+      <a href="{{ path('web_profile_view', {username: article.author.username}) }}" class="author">{{ article.author.username }}</a>
+      <span class="date">{{ article.createdAt|format_date(locale='en', pattern='MMMM d') }}</span>
+    </div>
+    {% if app.user %}
+      <form method="post" action="{{ path('web_article_favorite', {slug: article.slug}) }}" class="pull-xs-right">
+        <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ article.slug) }}">
+        <input type="hidden" name="op" value="{{ favorited ? 'unfavorite' : 'favorite' }}">
+        <button class="btn btn-outline-primary btn-sm" type="submit">
+          <i class="ion-heart"></i>&nbsp;{{ article.favoritesCount }}
+        </button>
+      </form>
+    {% else %}
+      <a class="btn btn-outline-primary btn-sm pull-xs-right" href="{{ path('web_login') }}">
+        <i class="ion-heart"></i>&nbsp;{{ article.favoritesCount }}
+      </a>
+    {% endif %}
+  </div>
+  <a href="{{ path('web_article_show', {slug: article.slug}) }}" class="preview-link">
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.description }}</p>
+    <span>Read more...</span>
+    <ul class="tag-list">
+      {% for tag in article.tags %}
+        <li class="tag tag-default tag-pill">{{ tag.name }}</li>
+      {% endfor %}
+    </ul>
+  </a>
+</div>
