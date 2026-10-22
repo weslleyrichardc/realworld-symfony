@@ -6211,11 +6211,12 @@ footer .attribution {
   max-width: 50%;
   vertical-align: top;
 }
-.article-preview .preview-link ul li {
-  font-weight: 300;
-  font-size: 0.8rem !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+/* The tag pills of a preview: slightly larger than the base 0.8rem so they
+   stay easy to read on top of the gray pill background. */
+.article-preview .preview-link ul li.tag {
+  font-size: 0.95rem !important;
+  padding: 0.25rem 0.7rem !important;
+  margin-left: 4px;
 }
 .btn .counter {
   font-size: 0.8rem !important;

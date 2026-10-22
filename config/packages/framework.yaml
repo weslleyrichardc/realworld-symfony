@@ -2,6 +2,12 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # Bump when properties or stylesheets change so browsers drop their
+    # cached copies (asset() appends this as ?v=1).
+    assets:
+        version: '1'
+        version_format: '?v=%s'
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
