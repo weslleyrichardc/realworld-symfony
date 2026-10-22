@@ -14,7 +14,9 @@
             <h4>{{ profile.username }}</h4>
             <p style="white-space: pre-line;">{{ profile.bio }}</p>
             {% if is_self %}
-              {# The edit settings button is rendered once the settings page exists. #}
+              <a class="btn btn-sm btn-outline-secondary action-btn" href="{{ path('web_settings') }}">
+                <i class="ion-gear-a"></i>&nbsp;Edit Profile Settings
+              </a>
             {% else %}
               {% include 'profile/_follow_button.html.twig' %}
             {% endif %}
