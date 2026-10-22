@@ -17,7 +17,16 @@
             <span class="date">{{ article.createdAt|format_date(locale='en', pattern='MMMM d') }}</span>
           </div>
           {% if is_author %}
-            {# The edit and delete buttons are rendered once the editor pages exist. #}
+            <a class="btn btn-sm btn-outline-secondary" href="{{ path('web_editor_edit', {slug: article.slug}) }}">
+              <i class="ion-edit"></i>&nbsp;Edit Article
+            </a>
+            &nbsp;&nbsp;
+            <form method="post" action="{{ path('web_article_delete', {slug: article.slug}) }}" class="d-inline">
+              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.slug) }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">
+                <i class="ion-trash-a"></i>&nbsp;Delete Article
+              </button>
+            </form>
           {% else %}
             {% if app.user %}
               <form method="post" action="{{ path('web_article_favorite', {slug: article.slug}) }}" class="d-inline">
