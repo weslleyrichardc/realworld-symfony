@@ -5355,6 +5355,11 @@ a.bg-danger:hover {
 .pull-xs-none {
   float: none !important;
 }
+/* Utility classes used by the web templates that the alpha Bootstrap copy
+   does not ship. Keep them in sync with the templates. */
+.d-inline {
+  display: inline !important;
+}
 @media (min-width: 544px) {
   .pull-sm-left {
     float: left !important;
@@ -6334,6 +6339,9 @@ footer .attribution {
   color: #333;
   font-size: 1rem;
 }
+.article-page .card .mod-options form {
+  display: inline;
+}
 .article-page .card .mod-options i {
   margin-left: 5px;
   opacity: 0.6;
@@ -6341,6 +6349,21 @@ footer .attribution {
 }
 .article-page .card .mod-options i:hover {
   opacity: 1;
+}
+/* A plain button that looks like the icons next to it (used for the
+   comment delete action, which needs a form button rather than an anchor). */
+.btn-as-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.btn-as-link:hover {
+  opacity: 0.6;
 }
 .profile-page .user-info {
   text-align: center;

@@ -30,7 +30,7 @@
       <div class="row">
 
         <div class="col-md-10 offset-md-1">
-          <div class="posts-toggle">
+          <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
                 <a class="nav-link{% if not favoritedTab %} active{% endif %}" href="{{ path('web_profile_view', {username: profile.username}) }}">My Posts</a>
@@ -44,7 +44,7 @@
           {% for row in postRows %}
             {{ include('post/_preview.html.twig', row) }}
           {% else %}
-            <div class="post-preview">No articles are here... yet.</div>
+            <div class="article-preview">No articles are here... yet.</div>
           {% endfor %}
 
           {{ include('_pagination.html.twig', {route: 'web_profile_view', params: {username: profile.username, favorite: (favoritedTab ? 'true' : null)}, page: page, pages: pages}) }}

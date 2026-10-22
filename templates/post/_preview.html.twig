@@ -1,5 +1,5 @@
-<div class="post-preview">
-  <div class="post-meta">
+<div class="article-preview">
+  <div class="article-meta">
     <a href="{{ path('web_profile_view', {username: article.author.username}) }}"><img src="{{ article.author.image|default('https://static.productionready.io/images/smiley-cyrus.jpg') }}" alt="{{ article.author.username }}"></a>
     <div class="info">
       <a href="{{ path('web_profile_view', {username: article.author.username}) }}" class="author">{{ article.author.username }}</a>
@@ -25,7 +25,7 @@
     <span>Read more...</span>
     <ul class="tag-list">
       {% for tag in article.tags %}
-        <li class="label label-default tag-pill">{{ tag.name }}</li>
+        <li class="tag tag-default tag-pill">{{ tag.name }}</li>
       {% endfor %}
     </ul>
   </a>
