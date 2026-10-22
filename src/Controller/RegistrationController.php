@@ -28,7 +28,7 @@ final class RegistrationController extends AbstractController
     ) {
     }
 
-    #[Route('/register', name: 'web_register')]
+    #[Route('/register', name: 'web_register', methods: ['GET'])]
     public function register(): Response|RedirectResponse
     {
         if ($this->getUser() instanceof User) {
